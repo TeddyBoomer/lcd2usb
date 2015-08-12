@@ -1,4 +1,6 @@
-from distutils.core import setup
+from setuptools import setup, find_packages  # Always prefer setuptools over distutils
+from codecs import open  # To use a consistent encoding
+# from distutils.core import setup
 import os
 
 long_description = open(os.path.join(os.path.dirname(__file__), 'README.rst')
@@ -6,8 +8,9 @@ long_description = open(os.path.join(os.path.dirname(__file__), 'README.rst')
 
 setup(
     name='lcd2usb',
-    description=long_description.split('\n')[0],
-    long_description='.. contents::\n\n' + long_description,
+    description=next(x for x in long_description.splitlines() if x.strip()),
+    #description=long_description.split('\n')[0],
+    long_description='.. contents::\n\n' + str(long_description, encoding='utf-8'),
     keywords='usb lcd lcd2usb',
     version='1.0',
     author='Xie Yanbo',
