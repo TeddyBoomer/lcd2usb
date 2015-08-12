@@ -61,7 +61,7 @@ class Bar(object):
         return self.get_value()
 
     def get_value(self):
-        max_value = max(self.data)
+        max_value = max(self.data +[1]) # [1] to avoid ZeroDivisionError
         mapping = [int((self.HEIGHT - 1) * i / max_value) for i in self.data]
         return ''.join([chr(i) for i in mapping])
 
