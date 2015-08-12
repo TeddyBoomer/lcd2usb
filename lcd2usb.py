@@ -7,7 +7,7 @@
 import struct
 
 import libusb1
-import usb1bis
+import usb1
 
 
 # vendor and product id
