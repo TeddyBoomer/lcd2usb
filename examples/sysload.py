@@ -7,17 +7,22 @@
 import re
 import subprocess
 import time
+import datetime
 
 from lcd2usb import LCD
 
-RE_UPTIME = re.compile('(.*?)\s+up\s+(.*?),\s+(\d+) users?,\s+'
-                       'load averages?: (\d+\.\d+),?'
-                       '\s+(\d+\.\d+),?\s+(\d+\.\d+)')
+# adjustement on Ubuntu 14.04, load average given with commas.
+RE_UPTIME = re.compile("(.*?)\s+up\s+(.*?),\s+(\d+) users?,\s+"+\
+                       "load averages?: (\d+[\.,]\d+),?"+\
+                       "\s+(\d+[\.,]\d+),?\s+(\d+[\.,]\d+)")
 
 
 def load_uptime():
-    info = subprocess.check_output('uptime')
+    info = str(subprocess.check_output('uptime'), encoding='utf-8')
     _, duration, users, avg1, avg5, avg15 = RE_UPTIME.match(info).groups()
+    avg1 = avg1.replace(',','.')
+    avg5 = avg5.replace(',','.')
+    avg15 = avg15.replace(',','.')
     days = '0'
     hours = '0'
     mins = '0'
@@ -68,7 +73,6 @@ def main(lcd):
     n = 0
     while True:
         days, hours, mins, users, avg1, avg5, avg15 = load_uptime()
-        import datetime
         lcd.home()
         lcd.fill(str(datetime.datetime.now())[:19], 0)
 

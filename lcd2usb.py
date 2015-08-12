@@ -7,7 +7,7 @@
 import struct
 
 import libusb1
-import usb1
+import usb1bis
 
 
 # vendor and product id
@@ -54,7 +54,7 @@ class LCD2USBNotFound(Exception):
 def find():
     '''find LCD2USB device'''
 
-    context = usb1.USBContext()
+    context = usb1bis.USBContext()
     handle = context.openByVendorIDAndProductID(LCD2USB_VENDOR_ID,
                                                 LCD2USB_PRODUCT_ID)
     return handle
@@ -84,8 +84,8 @@ class LCD(object):
     def find_or_die(cls):
         try:
             return cls()
-        except LCD2USBNotFound, exc:
-            print 'Error:', exc
+        except LCD2USBNotFound as exc:
+            print('Error:', exc)
             import sys
             sys.exit(1)
 
@@ -101,7 +101,7 @@ class LCD(object):
         bus = device.getBusNumber()
         dev = device.getDeviceAddress()
         if verbose:
-            print 'Found LCD2USB device on bus %03d device %03d.' % (bus, dev)
+            print('Found LCD2USB device on bus %03d device %03d.' % (bus, dev))
 
         return bus, dev
 
@@ -117,7 +117,7 @@ class LCD(object):
             buf = self.device.controlRead(REQUEST_GET_TYPE, LCD_ECHO, value,
                                           0, 2, 1000)
         except libusb1.USBError:
-            print 'USB request failed!'
+            print('USB request failed!')
             return -1
         ret, = struct.unpack('H', buf)  # unsigned short, size 2
         return ret
@@ -130,7 +130,7 @@ class LCD(object):
             buf = self.device.controlRead(REQUEST_GET_TYPE, command, 0, 0, 2,
                                           1000)
         except libusb1.USBError:
-            print 'USB request failed!'
+            print('USB request failed!')
             return -1
 
         # low, high = struct.unpack('BB', buf.raw)  # 2 unsigned char
@@ -171,7 +171,7 @@ class LCD(object):
         try:
             self.device.controlWrite(TYPE_VENDOR, command, value, 0, '', 1000)
         except libusb1.USBError:
-            print 'USB request failed!'
+            print('USB request failed!')
         return 0
 
     def set_contrast(self, value):
@@ -250,7 +250,7 @@ class LCD(object):
             self.device.controlWrite(TYPE_VENDOR, request, value,
                            index, '', 1000)
         except libusb1.USBError:
-            print 'USB request failed!'
+            print('USB request failed!')
             return -1
         return 0
 
@@ -266,7 +266,7 @@ class LCD(object):
             self.goto(column, row)
 
         if isinstance(data, str):
-            data = bytearray(data)
+            data = bytearray(data, encoding = 'utf-8')
         for char in data:
             self._enqueue(LCD_DATA | ctrl, char)
 
@@ -342,10 +342,10 @@ def test():
 
     lcd = LCD.find_or_die()
     lcd.info()
-    print 'echo 1234, get:', lcd.echo(1234)
-    print 'version:', '%s.%s' % lcd.version
-    print 'ctrl0:', lcd.ctrl0, 'ctrl1:', lcd.ctrl1
-    print 'keys on?', lcd.keys
+    print('echo 1234, get:', lcd.echo(1234))
+    print('version:', '%s.%s' % lcd.version)
+    print('ctrl0:', lcd.ctrl0, 'ctrl1:', lcd.ctrl1)
+    print('keys on?', lcd.keys)
 
     lcd.hello()
     return lcd
