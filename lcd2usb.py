@@ -54,7 +54,7 @@ class LCD2USBNotFound(Exception):
 def find():
     '''find LCD2USB device'''
 
-    context = usb1bis.USBContext()
+    context = usb1.USBContext()
     handle = context.openByVendorIDAndProductID(LCD2USB_VENDOR_ID,
                                                 LCD2USB_PRODUCT_ID)
     return handle
