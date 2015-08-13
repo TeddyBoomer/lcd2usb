@@ -123,7 +123,7 @@ def main():
         time.sleep(0.1)
 
     # have some fun with the brightness
-    for i in range(256)[::-1]:
+    for i in range(255,-1,-1):
         lcd.set_brightness(i)
         time.sleep(0.01)
 
