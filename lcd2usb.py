@@ -169,7 +169,7 @@ class LCD(object):
         '''set a value in the LCD interface'''
 
         try:
-            self.device.controlWrite(TYPE_VENDOR, command, value, 0, '', 1000)
+            self.device.controlWrite(TYPE_VENDOR, command, value, 0, b'', 1000)
         except libusb1.USBError:
             print('USB request failed!')
         return 0
@@ -248,7 +248,7 @@ class LCD(object):
         '''send an usb control message'''
         try:
             self.device.controlWrite(TYPE_VENDOR, request, value,
-                           index, '', 1000)
+                           index, b'', 1000)
         except libusb1.USBError:
             print('USB request failed!')
             return -1
@@ -266,7 +266,7 @@ class LCD(object):
             self.goto(column, row)
 
         if isinstance(data, str):
-            data = bytearray(data, encoding = 'utf-8')
+            data = bytes(data, encoding = 'utf-8')
         for char in data:
             self._enqueue(LCD_DATA | ctrl, char)
 
